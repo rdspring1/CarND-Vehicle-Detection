@@ -97,9 +97,9 @@ The first threshold avoids obvious false positives. I uses a large frame buffer 
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 + False Negatives - My pipeline still loses a car for a couple of frames when it is obviously visible. I tried to lower my filter's threshold, but this lead to more false positives. I decide that it was better to tradeoff a few missing frames to avoid any false positives.
 
