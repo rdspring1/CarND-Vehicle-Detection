@@ -59,7 +59,7 @@ The 'search_window' function is found in feature_extraction.py. I search the low
 
 I chose to move 2 cells_per_step to avoid false positives. When I tried 1 cell_per_step, I could detect cars better in a few frames, but saw a greater increase in false positives.
 
-I tired an alterative scaling factor - 1.0 x-axis and 1.5 y-axis. I detected more bounding-boxes per car, but it did not improve overall accuracy. Since decreasing the scaling factor can slow down the pipeline, I went with the default scaling factor of 1.5 for the x and y axes.
+I tried an alterative scaling factor - (1.0 x-axis and 1.5 y-axis). I detected more bounding-boxes per car, but it did not improve overall accuracy. Since decreasing the scaling factor can slow down the pipeline, I went with the default scaling factor of 1.5 for the x and y axes.
 
 ![alt text][image3]
 
@@ -77,7 +77,7 @@ Here are some example images:
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 
-Here is [my video](./result_video.mp4)
+Here is [my video](./output_images/result_video.mp4).
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
@@ -85,8 +85,6 @@ Here is [my video](./result_video.mp4)
 From the set of positive detections, I sum them together to create a heatmap. I apply a threhold to this heatmap to avoid false positive detections. Then, I add this heatmap to a deque that tracks a series of heatmap frames. This deque creates a moving average of the 30 video frames. To identify the vehicle positions, I take the mean of the images in the deque. I also threshold this mean image to ignore detections that did not appear in at least 40% of the deque's frames. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. I constructed bounding boxes to cover the area of each blob detected.
 
 The first threshold avoids obvious false positives. I uses a large frame buffer to track the car better when the pipeline misses the car in the frame. The second threshold avoids any false positives the buffer may accumulate over time. This setup works well at avoiding false postives and false negatives in the video.  
-
-Here is an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
 ### Here are six frames and their corresponding heatmaps:
 ![alt text][image5]
