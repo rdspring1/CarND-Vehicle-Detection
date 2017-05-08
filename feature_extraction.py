@@ -88,7 +88,7 @@ def single_img_features(img, spatial_size=(32, 32),
     #9) Return concatenated array of features
     return np.concatenate(img_features)
 
-def search_windows(img, ystart, ystop, scale, svc, scaler, 
+def search_windows(img, ystart, ystop, svc, scaler,
                     spatial_size=(32, 32), hist_bins=32, 
                     orient=9, pix_per_cell=8, cell_per_block=2):
 	# normalize
@@ -100,9 +100,10 @@ def search_windows(img, ystart, ystop, scale, svc, scaler,
 	# convert color space
 	search_image = cv2.cvtColor(search_image, cv2.COLOR_BGR2YCrCb)
 	
-	if scale != 1.0:
-		imshape = search_image.shape
-		search_image = cv2.resize(search_image, (np.int(imshape[1]/scale), np.int(imshape[0]/scale)))
+	xscale = 1.0
+	yscale = 1.5
+	imshape = search_image.shape
+	search_image = cv2.resize(search_image, (np.int(imshape[1]/xscale), np.int(imshape[0]/yscale)))
 		
 	ch1 = search_image[:,:,0]
 	ch2 = search_image[:,:,1]
@@ -125,7 +126,7 @@ def search_windows(img, ystart, ystop, scale, svc, scaler,
 	hog3 = get_hog_features(ch3, orient, pix_per_cell, cell_per_block, vis=False, feature_vec=False)
 	
 	on_windows = []
-	for xb in range(nxsteps):
+	for xb in range(nxsteps+1):
 		for yb in range(nysteps):
 			ypos = yb*cells_per_step
 			xpos = xb*cells_per_step
@@ -153,9 +154,9 @@ def search_windows(img, ystart, ystop, scale, svc, scaler,
 			
 			#7) If positive then save the window
 			if prediction == 1:
-				xbox_left = np.int(xleft*scale)
-				ytop_draw = np.int(ytop*scale)
-				win_draw = np.int(window*scale)
+				xbox_left = np.int(xleft*xscale)
+				ytop_draw = np.int(ytop*yscale)
+				win_draw = np.int(window*yscale)
 				on_windows.append(((xbox_left, ytop_draw+ystart),(xbox_left+win_draw,ytop_draw+win_draw+ystart)))
     #8) Return windows for positive detections
 	return on_windows
